@@ -24,7 +24,7 @@ func LoadEnv() (Config, error) {
 
 	// Unmarshal the configuration into the Config struct
 	if err := viper.Unmarshal(&config); err != nil {
-		return config, fmt.Errorf("unable to decode into struct, %w", err)
+		return config, err
 	}
 
 	// Validate required configuration
