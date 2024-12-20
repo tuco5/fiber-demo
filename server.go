@@ -42,6 +42,6 @@ func main() {
 	api.Mount("/v1", router_v1)
 
 	// Start listening
-	fmt.Printf("Server started on port %s\n", cfg.Port)
-	app.Listen(cfg.Port)
+	fmt.Printf("Server started on port :%s\n", cfg.Port)
+	app.Listen(":" + cfg.Port)
 }
