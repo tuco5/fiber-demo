@@ -18,7 +18,7 @@ func main() {
 	fmt.Println("Starting server...")
 
 	// Load env variables
-	env, err := config.LoadEnv(".")
+	env, err := config.LoadEnv()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

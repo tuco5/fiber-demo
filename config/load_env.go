@@ -10,20 +10,27 @@ type Config struct {
 	DBUrl string `mapstructure:"DB_URL"`
 }
 
-func LoadEnv(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
-	viper.SetConfigType("env")
-	viper.SetConfigName("app")
+func LoadEnv() (Config, error) {
+	var config Config
 
+	// Automatic read from environment
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-
-	if err != nil {
-		fmt.Println("error loading app.env file:", err)
-		return
+	// Optional read from file
+	viper.SetConfigFile(".env")
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("No env file found")
 	}
 
-	err = viper.Unmarshal(&config)
-	return
+	// Unmarshal the configuration into the Config struct
+	if err := viper.Unmarshal(&config); err != nil {
+		return config, fmt.Errorf("unable to decode into struct, %w", err)
+	}
+
+	// Validate required configuration
+	if config.DBUrl == "" {
+		return config, fmt.Errorf("DB_URL is required")
+	}
+
+	return config, nil
 }
