@@ -20,9 +20,7 @@ func Load(validator *validator.Validate) *Config {
 	env := "dev"
 
 	// Load env variables
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading env variables:", err)
-	}
+	godotenv.Load()
 
 	// Check if env variables are set
 	if os.Getenv("PORT") != "" {
