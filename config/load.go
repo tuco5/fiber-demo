@@ -10,7 +10,7 @@ type Config struct {
 	DBUrl string `mapstructure:"DB_URL"`
 }
 
-func LoadEnv() (Config, error) {
+func Load() (Config, error) {
 	var config Config
 
 	// Automatic read from environment
