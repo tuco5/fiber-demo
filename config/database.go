@@ -9,7 +9,7 @@ import (
 )
 
 func ConnectDB(config *Config) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(config.DBUrl), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(config.DbUrl), &gorm.Config{})
 	helper.ErrorPanic(err)
 
 	fmt.Println("Connected to DB")

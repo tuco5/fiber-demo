@@ -1,36 +1,48 @@
 package config
 
 import (
-	"fmt"
+	"log"
+	"os"
 
-	"github.com/spf13/viper"
+	"github.com/go-playground/validator/v10"
+	"github.com/lpernett/godotenv"
 )
 
 type Config struct {
-	DBUrl string `mapstructure:"DB_URL"`
+	DbUrl string `mapstructure:"DB_URL" validate:"required"`
+	Port  string `mapstructure:"PORT"`
+	Env   string `mapstructure:"ENV"`
 }
 
-func Load() (Config, error) {
-	var config Config
+func Load(validator *validator.Validate) *Config {
+	// Default values
+	port := ":3000"
+	env := "dev"
 
-	// Automatic read from environment
-	viper.AutomaticEnv()
-
-	// Optional read from file
-	viper.SetConfigFile(".env")
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("No env file found")
+	// Load env variables
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading env variables:", err)
 	}
 
-	// Unmarshal the configuration into the Config struct
-	if err := viper.Unmarshal(&config); err != nil {
-		return config, err
+	// Check if env variables are set
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+	if os.Getenv("ENV") != "" {
+		env = os.Getenv("ENV")
 	}
 
-	// Validate required configuration
-	if config.DBUrl == "" {
-		return config, fmt.Errorf("DB_URL is required")
+	// Convert to struct
+	cfg := &Config{
+		Port:  port,
+		Env:   env,
+		DbUrl: os.Getenv("DB_URL"),
 	}
 
-	return config, nil
+	// Validate
+	if err := validator.Struct(cfg); err != nil {
+		log.Fatal(err)
+	}
+
+	return cfg
 }

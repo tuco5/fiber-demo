@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -17,21 +16,18 @@ import (
 func main() {
 	fmt.Println("Starting server...")
 
-	// Load env variables
-	env, err := config.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// Load config
+	validate := validator.New()
+	cfg := config.Load(validate)
 
 	// Connect to DB
-	db := config.ConnectDB(&env)
+	db := config.ConnectDB(cfg)
 	db.Table("notes").AutoMigrate(&model.Note{})
 
 	// Init repository
 	noteRepository := repository.NewNoteRepositoryImpl(db)
 
 	// Init service
-	validate := validator.New()
 	noteService := service.NewNoteServiceImpl(noteRepository, validate)
 
 	// Init controller
@@ -46,6 +42,6 @@ func main() {
 	api.Mount("/v1", router_v1)
 
 	// Start listening
-	fmt.Println("Server started on port 3000")
-	app.Listen((":3000"))
+	fmt.Printf("Server started on port %s\n", cfg.Port)
+	app.Listen(cfg.Port)
 }
