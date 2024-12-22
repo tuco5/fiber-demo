@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -43,5 +44,5 @@ func main() {
 
 	// Start listening
 	fmt.Printf("Server started on port :%s\n", cfg.Port)
-	app.Listen(":" + cfg.Port)
+	log.Fatal(app.Listen(":" + cfg.Port))
 }
