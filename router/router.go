@@ -15,12 +15,12 @@ func NewNoteRouter(noteController *controller.NoteController) *fiber.App {
 		})
 	})
 
-	router.Route("/note", func(router fiber.Router) {
+	router.Route("/notes", func(router fiber.Router) {
 		router.Post("", noteController.Create)
 		router.Get("", noteController.FindAll)
 	})
 
-	router.Route("/note/:id", func(router fiber.Router) {
+	router.Route("/notes/:id", func(router fiber.Router) {
 		router.Get("", noteController.FindById)
 		router.Put("", noteController.Update)
 		router.Delete("", noteController.Delete)
